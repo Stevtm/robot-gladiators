@@ -25,8 +25,6 @@ var startGame = function() {
     
     for (var i = 0; i < enemyNames.length; i++) {
 
-        debugger;
-
         if (playerHealth > 0) {
             // let the player know what round they are in
             window.alert("Welcome to Robot Gladiators! Round " + (i + 1));
@@ -35,7 +33,7 @@ var startGame = function() {
             var pickedEnemyName = enemyNames[i];
     
             // reset enemyHealth before starting new fight
-            enemyHealth = 50;
+            enemyHealth = randomNumber(40, 60);
     
             // pass the pickedEnemyName variable's value into the fight function
             fight(pickedEnemyName);
@@ -60,6 +58,13 @@ var startGame = function() {
     // after the loop ends, player is either out of health or enemies to fight, so run the endGane function
     endGame();
 };
+
+// function to generate a random numeric value
+var randomNumber = function(min, max) {
+    var value = Math.floor(Math.random() * (max - min + 1)) + min;
+
+    return value;
+}
 
 // function to end the entire game
 var endGame = function() {
@@ -99,14 +104,17 @@ var fight = function(enemyName) {
             if (confirmSkip) {
                 window.alert(playerName + " has decided to skip this fight. Goodbye!");
                 // subtract money from playerMoney for skipping
-                playerMoney = playerMoney - 10;
+                playerMoney = Math.max(0, playerMoney - 10);
                 console.log("playerMoney", playerMoney);
                 break;
             }
         } 
+
+        // generate random damage value based on player's attack power
+        var damage = randomNumber(playerAttack -3, playerAttack);
             
-        // subtract the value of "playerAttack" from the value of "enemyHealth" and use that result to update the value in the "enemyHealth" variable
-        enemyHealth = enemyHealth - playerAttack;
+        // subtract the value of "damage" from the value of "enemyHealth" and use that result to update the value in the "enemyHealth" variable
+        enemyHealth = Math.max(0, enemyHealth - damage);
 
         // log a resulting message to the console so we know that it worked
         console.log(
@@ -122,8 +130,11 @@ var fight = function(enemyName) {
             window.alert(enemyName + " still has " + enemyHealth + " health left.");
         }
 
+        // generate random damage value based on the enemy's attack power
+        var damage = randomNumber(enemyAttack - 3, enemyAttack);
+
         // subtract the value of "enemyAttack" from the value of "playerHealth" and use that results to update the value in the "playerHealth" variable
-        playerHealth = playerHealth - enemyAttack;
+        playerHealth = Math.max(0, playerHealth - damage);
 
         // log a resulting message to the console so we know that it worked
         console.log(
