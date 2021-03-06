@@ -113,66 +113,86 @@ var fightOrSkip = function () {
 
 // compute the robot fight
 var fight = function (enemy) {
+	// keep track of who goes first
+	var isPlayerTurn = true;
+
+	if (Math.random() > 0.5) {
+		isPlayerTurn = false;
+	}
+
 	// repeat and execute as long as the enemy-robot is alive
 	while (enemy.health > 0 && playerInfo.health > 0) {
-		// ask the player if they would like to fight or skip the round
-		if (fightOrSkip()) {
-			break;
-		}
+		if (isPlayerTurn) {
+			// ask the player if they would like to fight or skip the round
+			if (fightOrSkip()) {
+				break;
+			}
+			// generate random damage value based on player's attack power
+			var damage = randomNumber(playerInfo.attack - 3, playerInfo.attack);
 
-		// generate random damage value based on player's attack power
-		var damage = randomNumber(playerInfo.attack - 3, playerInfo.attack);
+			// subtract the value of "damage" from the value of "enemy.health" and use that result to update the value in the "enemy.health" variable
+			enemy.health = Math.max(0, enemy.health - damage);
 
-		// subtract the value of "damage" from the value of "enemy.health" and use that result to update the value in the "enemy.health" variable
-		enemy.health = Math.max(0, enemy.health - damage);
-
-		// log a resulting message to the console so we know that it worked
-		console.log(
-			playerInfo.name +
-				" attacked " +
-				enemy.name +
-				". " +
-				enemy.name +
-				" now has " +
-				enemy.health +
-				" health remaining."
-		);
-
-		// check enemy's health
-		if (enemy.health <= 0) {
-			window.alert(enemy.name + " has died!");
-			break;
-		} else {
-			window.alert(enemy.name + " still has " + enemy.health + " health left.");
-		}
-
-		// generate random damage value based on the enemy's attack power
-		var damage = randomNumber(enemy.attack - 3, enemy.attack);
-
-		// subtract the value of "enemy.attack" from the value of "playerInfo.health" and use that results to update the value in the "playerInfo.health" variable
-		playerInfo.health = Math.max(0, playerInfo.health - damage);
-
-		// log a resulting message to the console so we know that it worked
-		console.log(
-			enemy.name +
-				" attacked " +
+			// log a resulting message to the console so we know that it worked
+			console.log(
 				playerInfo.name +
-				". " +
-				playerInfo.name +
-				" now has " +
-				playerInfo.health +
-				" health remaining."
-		);
-
-		// check player's health
-		if (playerInfo.health <= 0) {
-			window.alert(playerInfo.name + " has died!");
-			break;
-		} else {
-			window.alert(
-				playerInfo.name + " still has " + playerInfo.health + " health left."
+					" attacked " +
+					enemy.name +
+					". " +
+					enemy.name +
+					" now has " +
+					enemy.health +
+					" health remaining."
 			);
+
+			// check enemy's health
+			if (enemy.health <= 0) {
+				window.alert(enemy.name + " has died!");
+
+				// award player money for winning
+				playerInfo.money = playerInfo.money + 20;
+
+				// leave while() loop since the enemy is dead
+				break;
+			} else {
+				window.alert(
+					enemy.name + " still has " + enemy.health + " health left."
+				);
+			}
+		} else {
+			// generate random damage value based on the enemy's attack power
+			var damage = randomNumber(enemy.attack - 3, enemy.attack);
+
+			// subtract the value of "enemy.attack" from the value of "playerInfo.health" and use that results to update the value in the "playerInfo.health" variable
+			playerInfo.health = Math.max(0, playerInfo.health - damage);
+
+			// log a resulting message to the console so we know that it worked
+			console.log(
+				enemy.name +
+					" attacked " +
+					playerInfo.name +
+					". " +
+					playerInfo.name +
+					" now has " +
+					playerInfo.health +
+					" health remaining."
+			);
+
+			// check player's health
+			if (playerInfo.health <= 0) {
+				window.alert(playerInfo.name + " has died!");
+
+				// leave while() loop if player is dead
+				break;
+			} else {
+				window.alert(
+					playerInfo.name + " still has " + playerInfo.health + " health left."
+				);
+			}
 		}
+
+		// switch turn order for next round
+		isPlayerTurn = !isPlayerTurn;
 	}
 };
 
