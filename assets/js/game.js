@@ -61,6 +61,40 @@ var endGame = function () {
 				playerInfo.money +
 				"."
 		);
+
+		// get the previous high scores from the local storage
+		prevHighScore = localStorage.getItem("highScore");
+		prevRobotName = localStorage.getItem("robotName");
+
+		// Compare the current highscore to the local high score
+		if (localStorage.getItem("highScore") === null) {
+			// send a message that the first high score has been set
+			alert("You've set the first high score! Try to beat it next time!");
+
+			// set the local high score and record the robot name
+			localStorage.setItem("highScore", playerInfo.money);
+			localStorage.setItem("robotName", playerInfo.name);
+		} else if (playerInfo.money > localStorage.getItem("highScore")) {
+			// send a message that the high score has been beaten
+			alert(
+				"You've set a new high score! Well done! The old high score of " +
+					prevHighScore +
+					" was held by " +
+					prevRobotName
+			);
+
+			// set the local high score and record the robot name
+			localStorage.setItem("highScore", playerInfo.money);
+			localStorage.setItem("robotName", playerInfo.name);
+		} else {
+			// send a message that the high score has not been beaten
+			alert(
+				"You weren't able to beat the high score! The current high score is " +
+					prevHighScore +
+					" held by " +
+					prevRobotName
+			);
+		}
 	} else {
 		window.alert("You've lost your robot in battle.");
 	}
